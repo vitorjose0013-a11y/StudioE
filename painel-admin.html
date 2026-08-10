@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Barbeiro - StudioE</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,500;0,700;0,900;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./css/agendamentos.css">
+
+    <script type="importmap">
+    {
+        "imports": {
+            "firebase/app": "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js",
+            "firebase/auth": "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js",
+            "firebase/firestore": "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"
+        }
+    }
+    </script>
+
+    <link rel="icon" href="data:,">
+
+    <style>
+        /* Fundo original mantido — apenas garantindo que a tela role normalmente */
+        html, body {
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        /* Divisórias entre as seções (mesmo espírito do traço abaixo do subtítulo) */
+        .section-divider {
+            height: 1px;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: none;
+            margin: 4px 0 24px;
+        }
+
+        /* Corrige o input de data "crescendo" para a direita no mobile */
+        .date-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.625rem;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .custom-date-input {
+            flex: 1 1 100%;
+            min-width: 0;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<div id="modal-confirmacao" class="modal-overlay">
+    <div class="modal-box">
+        <h3 id="modal-title"><i class="fa-solid fa-triangle-exclamation" style="color: #ef4444;"></i> Confirmação</h3>
+        <p id="modal-text">Tem certeza que deseja realizar esta ação?</p>
+        <div class="modal-actions">
+            <button id="btn-modal-cancelar" class="btn-modal btn-cancelar">Cancelar</button>
+            <button id="btn-modal-confirmar" class="btn-modal btn-confirmar-danger">Confirmar</button>
+        </div>
+    </div>
+</div>
+<body>
+    <div id="toast" class="toast">
+        Aviso do sistema
+    </div>
+
+    <div class="app-wrapper">
+        <header>
+            <div class="logo-container">
+                <img src="./img/image.png" alt="StudioE Barbearia" onerror="this.onerror=null; this.src='image.png';">
+            </div>
+            <div>
+                <h1 class="brand-title">PAINEL DO BARBEIRO</h1>
+                <p class="brand-subtitle">Gerenciamento de Horários</p>
+            </div>
+        </header>
+
+        <section style="margin-bottom: 24px;">
+            <div class="section-header">
+                <div class="section-title">
+                    • Selecione o Dia
+                </div>
+            </div>
+            <div class="date-container">
+                <input type="date" id="admin-date-picker" class="custom-date-input" style="color-scheme: dark;">
+            </div>
+        </section>
+
+        <hr class="section-divider">
+
+        <section style="margin-bottom: 24px;">
+            <div class="section-header">
+                <div class="section-title">
+                    • Grade de Horários
+                </div>
+            </div>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 12px;">
+                Visualização dos horários para a data selecionada.
+            </p>
+            
+           <div id="admin-time-grid-container">
+                <div class="period-header"><i class="fa-regular fa-clock"></i> Manhã</div>
+                <div class="time-grid">
+                    <div class="time-item" data-hora="08:00"><label>08:00</label></div>
+                    <div class="time-item" data-hora="08:30"><label>08:30</label></div>
+                    <div class="time-item" data-hora="09:00"><label>09:00</label></div>
+                    <div class="time-item" data-hora="09:30"><label>09:30</label></div>
+                    <div class="time-item" data-hora="10:00"><label>10:00</label></div>
+                    <div class="time-item" data-hora="10:30"><label>10:30</label></div>
+                    <div class="time-item" data-hora="11:00"><label>11:00</label></div>
+                    <div class="time-item" data-hora="11:30"><label>11:30</label></div>
+                    <div class="time-item" data-hora="12:00"><label>12:00</label></div>
+                    <div class="time-item" data-hora="12:30"><label>12:30</label></div>
+                </div>
+
+                <div class="period-header"><i class="fa-regular fa-clock"></i> Tarde</div>
+                <div class="time-grid">
+                    <div class="time-item" data-hora="13:00"><label>13:00</label></div>
+                    <div class="time-item" data-hora="13:30"><label>13:30</label></div>
+                    <div class="time-item" data-hora="14:00"><label>14:00</label></div>
+                    <div class="time-item" data-hora="14:30"><label>14:30</label></div>
+                    <div class="time-item" data-hora="15:00"><label>15:00</label></div>
+                    <div class="time-item" data-hora="15:30"><label>15:30</label></div>
+                    <div class="time-item" data-hora="16:00"><label>16:00</label></div>
+                    <div class="time-item" data-hora="16:30"><label>16:30</label></div>
+                    <div class="time-item" data-hora="17:00"><label>17:00</label></div>
+                    <div class="time-item" data-hora="17:30"><label>17:30</label></div>
+                    <div class="time-item" data-hora="18:00"><label>18:00</label></div>
+                </div>
+
+                <div class="period-header"><i class="fa-regular fa-clock"></i> Noite</div>
+                <div class="time-grid">
+                    <div class="time-item" data-hora="18:30"><label>18:30</label></div>
+                    <div class="time-item" data-hora="19:00"><label>19:00</label></div>
+                    <div class="time-item" data-hora="19:30"><label>19:30</label></div>
+                    <div class="time-item" data-hora="20:00"><label>20:00</label></div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="section-divider">
+
+        <section style="margin-bottom: 32px;">
+            <div class="section-header">
+                <div class="section-title">
+                    • Agendamentos de Clientes
+                </div>
+            </div>
+
+            <div id="admin-agendamentos-list" style="display: flex; flex-direction: column; gap: 12px;">
+                <div class="service-card" style="justify-content: center; color: var(--text-secondary);">
+                    Selecione uma data para ver os agendamentos.
+                </div>
+            </div>
+        </section>
+
+        <div class="summary-card">
+            <button type="button" class="btn-confirm" id="btn-sair" style="background-color: rgba(239, 68, 68, 0.15); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3);">
+                Sair da Conta
+            </button>
+        </div>
+
+        <footer>
+            <div class="address-box">
+                <i class="fa-solid fa-location-dot"></i>
+                <span>STUDIOE BARBEARIA - Área Restrita</span>
+            </div>
+        </footer>
+    </div>
+</body>
+
+<script type="module">
+    import { criarMenuSuperior } from "./js/menu.js";
+    criarMenuSuperior("admin");
+</script>
+
+<script type="module" src="./js/painel-admin.js"></script>
+<script type="module" src="js/menu.js"></script>
+</html>

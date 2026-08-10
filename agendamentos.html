@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STUDIOE BARBEARIA - Agendamento</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,500;0,700;0,900;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="css/agendamentos.css">
+    <link rel="stylesheet" href="css/admin.css">
+
+    <script type="importmap">
+      {
+        "imports": {
+          "firebase/app": "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js",
+          "firebase/analytics": "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js",
+          "firebase/firestore": "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js",
+          "firebase/auth": "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"
+        }
+      }
+    </script>
+
+    <style>
+        /* Fundo original mantido — apenas garantindo que a tela role normalmente */
+        html, body {
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        /* Divisórias entre as seções (mesmo espírito do traço abaixo de "Estilo & Tradição") */
+        .section-divider {
+            height: 1px;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: none;
+            margin: 4px 0 28px;
+        }
+
+        /* Cards de serviço com a mesma altura e preço sem quebrar linha */
+        .services-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .service-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            min-height: 4.75rem;
+            box-sizing: border-box;
+        }
+
+        .service-info {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .service-info h3,
+        .service-info p {
+            overflow-wrap: break-word;
+        }
+
+        .service-price {
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+
+        /* Corrige o input de data "crescendo" para a direita no mobile */
+        .date-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.625rem;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .custom-date-input {
+            flex: 1 1 100%;
+            min-width: 0;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+
+        .weekday-badge {
+            flex: 1 1 100%;
+            min-width: 0;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<link rel="icon" href="data:,">
+<body>
+
+    <div id="toast" class="toast">Limite máximo de 3 horários atingido!</div>
+
+    <div id="confirmation-modal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-icon">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <h2>Agendamento Confirmado!</h2>
+                <p>Seu horário foi reservado com sucesso no STUDIOE BARBEARIA.</p>
+            </div>
+
+            <div class="modal-body">
+                <div class="modal-detail-item">
+                    <span class="detail-label"><i class="fa-solid fa-scissors"></i> Serviço:</span>
+                    <span id="modal-service" class="detail-value">-</span>
+                </div>
+                <div class="modal-detail-item">
+                    <span class="detail-label"><i class="fa-regular fa-calendar"></i> Data:</span>
+                    <span id="modal-date" class="detail-value">-</span>
+                </div>
+                <div class="modal-detail-item">
+                    <span class="detail-label"><i class="fa-regular fa-clock"></i> Horário(s):</span>
+                    <span id="modal-times" class="detail-value">-</span>
+                </div>
+                <div class="modal-detail-item total">
+                    <span class="detail-label">Valor Total:</span>
+                    <span id="modal-total" class="detail-value price">-</span>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn-modal-close" id="btn-concluir">
+                    Concluir
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="cancel-modal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-icon" style="color: #ff4d4d;">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <h2>Cancelar Agendamento?</h2>
+                <p id="cancel-modal-text">Deseja cancelar o agendamento da xx:xx?</p>
+            </div>
+
+            <div class="modal-footer" style="display: flex; gap: 10px;">
+                <button type="button" class="btn-modal-close" id="btn-nao-cancelar" style="background-color: #333; flex: 1;">
+                    Não
+                </button>
+                <button type="button" class="btn-modal-close" id="btn-sim-cancelar" style="background-color: #ff4d4d; flex: 1;">
+                    Sim
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-wrapper">
+        
+        <header>
+            <div class="logo-container">
+                <img src="img/image.png" alt="StudioE Barbearia" onerror="this.onerror=null; this.src='image.png';">
+            </div>
+
+            <div>
+                <h1 class="brand-title">STUDIOE BARBEARIA</h1>
+                <p class="brand-subtitle">Estilo & Tradição</p>
+            </div>
+        </header>
+
+        <form id="booking-form" onsubmit="event.preventDefault();">
+            
+            <section style="margin-bottom: 28px;">
+                <div class="section-header">
+                    <div class="section-title">
+                        • Serviço
+                    </div>
+                </div>
+
+                <div class="services-list">
+                    <label class="service-option">
+                        <input type="radio" name="service" value="45" data-name="Corte" checked>
+                        <div class="service-card">
+                            <div class="service-info">
+                                <h3>Corte</h3>
+                                <p>Corte moderno, tesoura ou máquina.</p>
+                            </div>
+                            <div class="service-price">R$ 45</div>
+                        </div>
+                    </label>
+
+                    <label class="service-option">
+                        <input type="radio" name="service" value="35" data-name="Barba">
+                        <div class="service-card">
+                            <div class="service-info">
+                                <h3>Barba</h3>
+                                <p>Modelagem, toalha quente e alinhamento.</p>
+                            </div>
+                            <div class="service-price">R$ 35</div>
+                        </div>
+                    </label>
+
+                    <label class="service-option">
+                        <input type="radio" name="service" value="70" data-name="Corte + Barba">
+                        <div class="service-card">
+                            <div class="service-info">
+                                <h3>Corte + Barba</h3>
+                                <p>Combo completo cabelo e barba.</p>
+                            </div>
+                            <div class="service-price">R$ 70</div>
+                        </div>
+                    </label>
+                </div>
+            </section>
+
+            <hr class="section-divider">
+
+            <section style="margin-bottom: 28px;">
+                <div class="section-header">
+                    <div class="section-title">
+                        • Data do Agendamento
+                    </div>
+                </div>
+
+                <div class="date-container">
+                    <input type="date" id="date-picker" class="custom-date-input" required>
+                    
+                    <div id="weekday-info" class="weekday-badge">
+                        <i class="fa-regular fa-calendar-days"></i>
+                        <span id="weekday-text">Selecione uma data</span>
+                    </div>
+                </div>
+            </section>
+
+            <hr class="section-divider">
+
+            <section style="margin-bottom: 32px;">
+                <div class="section-header">
+                    <div class="section-title">
+                        • Horário (Max 3)
+                    </div>
+                </div>
+
+                <div id="time-grid-container"></div>
+            </section>
+
+            <div class="summary-card">
+                <div class="summary-row">
+                    <span class="summary-label">Total a pagar:</span>
+                    <span id="total-display" class="summary-value">R$ 45,00</span>
+                </div>
+                <button type="button" class="btn-confirm" onclick="confirmarAgendamento()">
+                    Confirmar Horário
+                </button>
+            </div>
+
+        </form>
+
+        <div class="social-bar-bottom">
+            <a href="https://api.whatsapp.com/send?phone=5547997852576&text=Olá, vim pelo app" target="_blank" class="social-btn btn-whatsapp">
+                <i class="fa-brands fa-whatsapp"></i> WhatsApp
+            </a>
+            <a href="https://www.instagram.com/studioe_barbearia/" target="_blank" class="social-btn btn-instagram">
+                <i class="fa-brands fa-instagram"></i> Instagram
+            </a>
+        </div>
+
+        <footer>
+            <div class="address-box">
+                <i class="fa-solid fa-location-dot"></i>
+                <span>R. Willy Schroeder, 370 - Centro<br>Lontras - SC, 89182-000</span>
+            </div>
+        </footer>
+
+    </div>
+
+    <script type="module" src="js/agendamentos.js"></script>
+    <script type="module" src="js/menu.js"></script>
+</body>
+</html>

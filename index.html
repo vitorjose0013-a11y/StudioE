@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>STUDIOE BARBEARIA - Bem-vindo</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,500;0,700;0,900;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="css/agendamentos.css">
+
+    <style>
+        /* Base de referência: 1rem = 16px */
+        html {
+            font-size: 16px;
+        }
+
+        /* Tela cheia com fundo gradiente escuro (mesmo estilo da tela de login) */
+        html, body {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            overscroll-behavior: none;
+            background: linear-gradient(
+                to bottom,
+                #3c3c3c 0%,
+                #1b1b1b 45%,
+                #121212 100%
+            );
+            color: #ffffff;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Usa altura dinâmica da viewport (dvh) com fallback para 100vh,
+           garantindo que nenhum navegador mobile force scroll por causa
+           de barras de endereço/teclado */
+        .app-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100vh;
+            height: 100dvh;
+            max-width: 30rem;
+            width: 100%;
+            margin: 0 auto;
+            padding: 1rem;
+            padding-top: max(1rem, env(safe-area-inset-top));
+            padding-bottom: max(1rem, env(safe-area-inset-bottom));
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        header {
+            padding: 0.5rem 0;
+            flex-shrink: 0;
+            text-align: center;
+        }
+
+        .brand-title {
+            font-size: 1.25rem;
+            margin-bottom: 0.125rem;
+            font-weight: 700;
+        }
+
+        .brand-subtitle {
+            font-size: 0.8rem;
+            margin: 0;
+            display: inline-block;
+        }
+
+        .welcome-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+            min-height: 0;
+            text-align: center;
+            padding: 0 0.625rem;
+        }
+
+        .welcome-description {
+            font-size: 0.844rem;
+            color: #b0b0b0;
+            line-height: 1.4;
+            margin-bottom: 1.25rem;
+            max-width: 18.75rem;
+        }
+
+        .auth-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.625rem;
+            width: 100%;
+            max-width: 18.75rem;
+        }
+
+        /* Botão Criar Conta */
+        .btn-auth-primary {
+            background-color: #ffffff;
+            color: #121212;
+            font-weight: 700;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            border: none;
+            font-size: 0.906rem;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            display: block;
+            transition: background 0.3s;
+        }
+
+        .btn-auth-primary:hover {
+            background-color: #e0e0e0;
+        }
+
+        /* Botão Já tenho uma conta */
+        .btn-auth-secondary {
+            background-color: transparent;
+            color: #b0b0b0;
+            font-weight: 500;
+            padding: 0.625rem;
+            border-radius: 0.5rem;
+            border: 1px solid #333333;
+            font-size: 0.844rem;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            display: block;
+            transition: background 0.2s, color 0.2s, border-color 0.2s;
+        }
+
+        .btn-auth-secondary:hover {
+            background-color: #1f1f1f;
+            color: #ffffff;
+            border-color: #555555;
+        }
+
+        footer {
+            padding: 0.5rem 0;
+            flex-shrink: 0;
+            text-align: center;
+        }
+
+        .address-box {
+            font-size: 0.75rem;
+            color: #888888;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-wrapper">
+        
+        <header>
+            <div class="logo-container">
+                <img src="img/image.png" alt="StudioE Barbearia" onerror="this.onerror=null; this.src='image.png';">
+            </div>
+
+            <div>
+                <h1 class="brand-title">STUDIOE BARBEARIA</h1>
+                <p class="brand-subtitle">Estilo & Tradição</p>
+            </div>
+        </header>
+
+        <main class="welcome-container">
+            <p class="welcome-description">
+               Bem-vindo ao StudioE Barbearia! Agende seu corte de forma rápida e simples, garantindo seu estilo com o melhor profissional.
+            </p>
+
+            <div class="auth-buttons">
+                <a href="cadastro.html" class="btn-auth-primary">
+                    <i class="fa-solid fa-user-plus"></i> Criar Conta
+                </a>
+
+                <a href="login.html" class="btn-auth-secondary">
+                    <i class="fa-solid fa-right-to-bracket"></i> Já tenho uma conta
+                </a>
+            </div>
+        </main>
+
+        <footer>
+            <div class="address-box">
+                <i class="fa-solid fa-location-dot"></i>
+                <span>R. Willy Schroeder, 370 - Centro | Lontras - SC</span>
+            </div>
+        </footer>
+
+    </div>
+
+</body>
+</html>
