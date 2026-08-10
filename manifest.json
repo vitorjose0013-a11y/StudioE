@@ -1,0 +1,20 @@
+{
+  "id": "/StudioE/",
+  "name": "Studio E Horários",
+  "short_name": "Studio E",
+  "start_url": "/StudioE/",
+  "scope": "/StudioE/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#121212",
+  "theme_color": "#121212",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "img/studioE.ico",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
