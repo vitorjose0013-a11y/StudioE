@@ -1,20 +1,17 @@
 {
-  "id": "/StudioE/",
-  "name": "Studio E Horários",
-  "short_name": "Studio E",
-  "start_url": "/StudioE/",
-  "scope": "/StudioE/",
-  "display": "standalone",
-  "orientation": "portrait",
   "background_color": "#121212",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "StudioE Agendamentos",
+  "orientation": "portrait",
+  "scope": "/StudioE",
+  "short_name": "StudioE",
+  "start_url": "/StudioE",
   "theme_color": "#121212",
-  "lang": "pt-BR",
-  "icons": [
-    {
-      "src": "img/studioE.ico",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
+  "lang": "pt",
+  "description": "Aplicativo de agendamentos e gerenciamento de horários do Studio E.",
+  "id": "/StudioE/",
+  "categories": [
+    "beauty"
   ]
 }
