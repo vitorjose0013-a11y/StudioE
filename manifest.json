@@ -16,10 +16,16 @@
   ],
   "icons": [
     {
-      "src": "img/studioE.ico",
+      "src": "img/studioE.png",
       "sizes": "512x512",
-      "type": "image/x-icon",
-      "purpose": "any maskable"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "img/studioE.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }
