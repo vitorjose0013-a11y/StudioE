@@ -1,17 +1,25 @@
 {
-  "background_color": "#121212",
-  "dir": "ltr",
-  "display": "standalone",
-  "name": "StudioE Agendamentos",
-  "orientation": "portrait",
-  "scope": "/StudioE",
-  "short_name": "StudioE",
-  "start_url": "/StudioE",
-  "theme_color": "#121212",
-  "lang": "pt",
-  "description": "Aplicativo de agendamentos e gerenciamento de horários do Studio E.",
   "id": "/StudioE/",
+  "name": "StudioE Agendamentos",
+  "short_name": "StudioE",
+  "description": "Aplicativo de agendamentos e gerenciamento de horários do Studio E.",
+  "start_url": "/StudioE",
+  "scope": "/StudioE",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#121212",
+  "theme_color": "#121212",
+  "dir": "ltr",
+  "lang": "pt",
   "categories": [
     "beauty"
+  ],
+  "icons": [
+    {
+      "src": "img/studioE.ico",
+      "sizes": "512x512",
+      "type": "image/x-icon",
+      "purpose": "any maskable"
+    }
   ]
 }
